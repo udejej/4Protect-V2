@@ -29,7 +29,7 @@ node index.js
 ```
 
 ## Installation Vidéo
-
+https://youtu.be/mcVNteedWIk
 
 ## Contribution
 Les contributions sont acceptées avec plaisir suffit de faire un pull requests / issues 
