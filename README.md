@@ -1,5 +1,5 @@
 # 4Protect-V2
-6 mois d'attente parce que j'avais la flemme mdrr :c
+6 mois d'attente parce que j'avais la flemme mdrr :c et c'est possible que le bot a des bugs / ai des commandes mal faites.
 
 ## Fonctionnalités
 - Discord.js en V14
