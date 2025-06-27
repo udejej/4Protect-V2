@@ -92,10 +92,6 @@ if (public) {
     return message.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande.", allowedMentions: { repliedUser: false } });
   }
 
-  if (!(await hasPermission())) {
-    return message.reply({ content: "Vous n'avez pas la permission d'éxecuter la commande.", allowedMentions: { repliedUser: false } });
-  }
-
   const statuses = ['online', 'idle', 'dnd', 'invisible'];
   const status = args[0] ? args[0].toLowerCase() : '';
 
