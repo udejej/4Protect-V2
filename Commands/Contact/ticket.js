@@ -5,9 +5,9 @@ const config = require('../../config.json');
 
 exports.help = {
   name: 'ticket',
-  sname: 'ticket <catégorie id>',
+  sname: 'ticket',
   description : 'Permet de configurer les tickets',
-  use: 'ticket <catégorie id>',
+  use: 'ticket',
 };
 
 exports.run = async (bot, message, args, config) => {
