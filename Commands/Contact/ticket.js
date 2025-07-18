@@ -5,9 +5,9 @@ const config = require('../../config.json');
 
 exports.help = {
   name: 'ticket',
-  sname: 'ticket',
+  sname: 'ticket <catégorie id>',
   description : 'Permet de configurer les tickets',
-  use: 'ticket',
+  use: 'ticket <catégorie id>',
 };
 
 exports.run = async (bot, message, args, config) => {
@@ -94,6 +94,23 @@ if (public) {
   if (!(await checkperm(message, exports.help.name))) {
     return message.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande.", allowedMentions: { repliedUser: false } });
   }
+  
+
+  const category = message.guild.channels.cache.get(args[0]);
+  if (!category || category.type !== 4) {
+    return message.reply({ content: "ID Catégorie invalide." });
+  }
+
+    db.run(
+    `CREATE TABLE IF NOT EXISTS ticket (guild TEXT PRIMARY KEY, category TEXT)`,
+    [],
+    () => {
+      db.run(
+        `INSERT OR REPLACE INTO ticket (guild, category) VALUES (?, ?)`,
+        [message.guild.id, category.id] 
+      );
+    }
+  );
 
   const options = [
     { key: 'option1', label: config.option1 },
@@ -103,19 +120,18 @@ if (public) {
   ].filter(opt => opt.label && opt.label.trim() !== '');
 
   if (options.length === 0) {
-    return message.reply({ content: 'Aucune option de ticket n\'est configurée' });
+    return message.reply({ content: 'Aucune option pour le ticket n\'est configurée' });
   }
 
-  const row = new ActionRowBuilder();
-  options.forEach(opt => {
-    row.addComponents(
-      new ButtonBuilder()
-        .setCustomId(`ticket_${opt.key}`)
-        .setLabel(opt.label)
-        .setStyle(ButtonStyle.Secondary)
+  const ticket = new StringSelectMenuBuilder()
+    .setCustomId('ticket_select')
+    .setPlaceholder('Choisissez une option')
+    .addOptions(
+      options.map(opt => ({
+        label: opt.label,
+        value: opt.key
+      }))
     );
-  });
-
   const embed = new EmbedBuilder();
   if (config.titre && config.titre.trim() !== '') {
     embed.setTitle(config.titre);
@@ -129,5 +145,5 @@ if (public) {
     embed.setFooter({ text: config.tfooter, iconURL: icon });
   }
 
-  await message.channel.send({ embeds: [embed], components: [row] });
+  await message.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(ticket)] });
 };
