@@ -147,96 +147,54 @@ if (interaction.isButton() && interaction.customId.startsWith('giveaway_')) {
       });
     }
 
-    if (interaction.isButton() && interaction.customId === 'ticket_open') {
-      const existing = interaction.guild.channels.cache.find(c => c.topic === `Ticket de ${interaction.user.id}`);
+    if (interaction.isButton() && interaction.customId === 'ticket_close') {
+    interaction.channel.delete().catch(() => {});
+}
+
+        if (interaction.isStringSelectMenu() && interaction.customId === 'ticket_select') {
+      const optiontxt = config[interaction.values[0]] || 'Ticket';
+      const existing = interaction.guild.channels.cache.find(c =>
+        c.topic === `${optiontxt} - ${interaction.user.username}`
+      );
       if (existing) {
         return interaction.reply({ content: 'Vous avez déjà un ticket ouvert.', ephemeral: true });
       }
-      const ticketChannel = await interaction.guild.channels.create({
-        name: `ticket-${interaction.user.username}`,
-        type: 0,
-        permissionOverwrites: [
-          { id: interaction.guild.id, deny: ['ViewChannel'] },
-          { id: interaction.user.id, allow: ['ViewChannel', 'SendMessages', 'AttachFiles'] },
-          { id: interaction.client.user.id, allow: ['ViewChannel', 'SendMessages', 'ManageChannels'] },
-        ],
+      db.get('SELECT category FROM ticket WHERE guild = ?', [interaction.guild.id], async (err, row) => {
+  let parent = row?.category || null;
+  if (parent && typeof parent !== 'string') parent = String(parent); 
+  const ticketChannel = await interaction.guild.channels.create({
+    name: `ticket-${interaction.user.username}`,
+    type: 0, 
+    topic: `${optiontxt} - ${interaction.user.username}`,
+    parent: parent, 
+    permissionOverwrites: [
+      { id: interaction.guild.id, deny: ['ViewChannel'] },
+      { id: interaction.user.id, allow: ['ViewChannel', 'SendMessages', 'AttachFiles'] },
+      { id: interaction.client.user.id, allow: ['ViewChannel', 'SendMessages', 'ManageChannels'] },
+    ],
+  });
+        const close = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId('ticket_close')
+            .setLabel('Fermer le ticket')
+            .setStyle(ButtonStyle.Danger)
+        );
+        await ticketChannel.send({
+          content: `<@${interaction.user.id}>`,
+          embeds: [
+            new EmbedBuilder()
+              .setTitle('Ticket - ' + optiontxt)
+              .setDescription('Expliquez votre problème, un membre du staff va vous répondre.\n\nPour fermer le ticket, cliquez sur le bouton fermer le ticket')
+              .setColor(config.color)
+              .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+              .setThumbnail(interaction.user.displayAvatarURL())
+              .setFooter({ text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+              .setTimestamp()
+          ],
+          components: [close]
+        });
+        return interaction.reply({ content: `Votre ticket: ${ticketChannel}`, ephemeral: true });
       });
-      const closeBtn = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId('ticket_close')
-          .setLabel('Fermer le ticket')
-          .setStyle(ButtonStyle.Danger)
-      );
-      await ticketChannel.send({ content: `<@${interaction.user.id}>`, embeds: [
-        new EmbedBuilder()
-          .setTitle('Ticket Ouvert')
-          .setDescription('Expliquez votre problème, un membre du staff va vous répondre.')
-          .setColor(config.color)
-      ], components: [closeBtn] });
-      return interaction.reply({ content: `Votre ticket a été créé: ${ticketChannel}`, ephemeral: true });
-    }
-
-
-    if (interaction.isButton() && interaction.customId.startsWith('ticket_option')) {
-      const optionKey = interaction.customId.replace('ticket_', '');
-      const optionLabel = config[optionKey] || 'Ticket';
-      const modal = new ModalBuilder()
-        .setCustomId(`ticket_modal_${optionKey}`)
-        .setTitle(`Créer un ticket`);
-      const input = new TextInputBuilder()
-        .setCustomId('raison')
-        .setLabel('Raison')
-        .setStyle(TextInputStyle.Paragraph)
-        .setRequired(true)
-        .setMaxLength(500);
-      modal.addComponents(new ActionRowBuilder().addComponents(input));
-      return interaction.showModal(modal);
-    }
-
-    if (interaction.isModalSubmit() && interaction.customId.startsWith('ticket_modal_')) {
-      const optionKey = interaction.customId.replace('ticket_modal_', '');
-      const optionLabel = config[optionKey] || 'Ticket';
-      const raison = interaction.fields.getTextInputValue('raison');
-      const existing = interaction.guild.channels.cache.find(c => c.topic === `${optionLabel} - ${interaction.user.username}`);
-      if (existing) {
-        return interaction.reply({ content: 'Vous avez déjà un ticket ouvert', ephemeral: true });
-      }
-      const ticketChannel = await interaction.guild.channels.create({
-        name: `ticket-${interaction.user.username}`,
-        type: 0,
-        topic: `${optionLabel} - ${interaction.user.username}`,
-        permissionOverwrites: [
-          { id: interaction.guild.id, deny: ['ViewChannel'] },
-          { id: interaction.user.id, allow: ['ViewChannel', 'SendMessages', 'AttachFiles'] },
-          { id: interaction.client.user.id, allow: ['ViewChannel', 'SendMessages', 'ManageChannels'] },
-        ],
-      });
-      const closeBtn = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId('ticket_close')
-          .setLabel('Fermer')
-          .setStyle(ButtonStyle.Danger)
-      );
-      await ticketChannel.send({ content: `<@${interaction.user.id}>`, embeds: [
-        new EmbedBuilder()
-          .setTitle('Ticket - ' + optionLabel)
-          .setDescription('Expliquez votre problème, un membre du staff va vous répondre.\n\nPour fermer le ticket, cliquez sur le bouton fermer le ticket')
-          .setColor(config.color)
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-          .setThumbnail(interaction.user.displayAvatarURL())
-          .addFields({
-            name: 'Raison',
-            value: `\`\`\`\n${raison}\n\`\`\``,
-            inline: false
-          })
-          .setFooter({ text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-          .setTimestamp()
-      ], components: [closeBtn] });
-      return interaction.reply({ content: `Votre ticket: ${ticketChannel}`, ephemeral: true });
-    }
-
-    if (interaction.isButton() && interaction.customId === 'ticket_close') {
-        await interaction.channel.delete()
-    }
+}
   }
 };
