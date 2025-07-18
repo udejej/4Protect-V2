@@ -93,13 +93,12 @@ if (public) {
     return message.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande.", allowedMentions: { repliedUser: false } });
   }
 
-  const copyemoji = emojiArg.match(/<(a)?:([a-zA-Z0-9_]+):(\d+)>/);
-  if (copyemoji) {
-    const animated = Boolean(copyemoji[1]);
-    const name = copyemoji[2];
-    const id = copyemoji[3];
+  const emj = args[0].match(/<(a)?:([a-zA-Z0-9_]+):(\d+)>/);
+  if (emj) {
+    const animated = Boolean(emj[1]);
+    const name = emj[2];
+    const id = emj[3];
     const url = `https://cdn.discordapp.com/emojis/${id}.${animated ? 'gif' : 'png'}?v=1`;
-
     try {
       const emoji = await message.guild.emojis.create({ name, attachment: url });
       return message.reply(`Emoji ajouté : <${animated ? 'a' : ''}:${name}:${emoji.id}>`);
