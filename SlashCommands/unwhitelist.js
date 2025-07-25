@@ -108,7 +108,7 @@ if (public) {
         return
       }
       if (this.changes === 0) {
-        return interaction.reply({ content: 'Cet utilisateur n\'est pas dans la whitelist.', ephemeral: true });
+        return interaction.reply({ content: 'Cet utilisateur n\'était pas dans la whitelist.', ephemeral: true });
       }
       interaction.reply(`${user.tag} a été retiré de la whitelist.`);
     });
