@@ -2,13 +2,11 @@ const Discord = require('discord.js');
 const db = require('../../Events/loadDatabase');
 const config = require('../../config.json');
 
-const ITEMS_PER_PAGE = 10;
-
 exports.help = {
   name: 'setowner',
   sname: 'setowner [mention/id]',
-  description: 'Permet de gérer la owner',
-  use: 'owner [mention/id]\nowner',
+  description: "Permet d'ajouter des owners",
+  use: 'setowner [mention/id]',
 };
 
 exports.run = async (bot, message, args, config) => {
@@ -106,9 +104,9 @@ if (public) {
       }
 
       if (this.changes === 0) {
-        return message.reply(`<@${user.id}> est déjà dans la liste des owner.`);
+        return message.reply(`<@${user.id}> est déjà owner.`);
       }
 
-      message.reply(`<@${user.id}> a été ajouté à la liste des owner.`);
+      message.reply(`<@${user.id}> est désormais un owner.`);
     });
 };
