@@ -89,22 +89,22 @@ exports.run = async (bot, message, args) => {
   let count = parseInt(args[1]) || 3;
   let windowParsed = parseTime(args[2] || '10s');
 if (!windowParsed) {
-  return message.reply("Fenêtre invalide. Exemple : 2s, 10min, 1h, 1d");
+  return message.reply("Regarde +help antispam");
 }
 let sous = windowParsed.ms;
   let timeoutParsed = parseTime(args[3] || '1m');
 
 if (!windowParsed) {
-  return message.reply("Le membre est timeout si il envoie x messages en moin de x (1s, 1min, 1h, 1d)");
+  return message.reply("Regarde +help antispam");
 }
 if (!timeoutParsed) {
-  return message.reply("Durée de timeout invalide (1m, 10s, 1h, 1d)");
+  return message.reply("Regarde +help antispam");
 }
 
   db.run(`INSERT INTO antiraid (guild, antispam, nombremessage, sous, timeout)
         VALUES (?, ?, ?, ?, ?)
         ON CONFLICT(guild) DO UPDATE SET antispam = ?, nombremessage = ?, sous = ?, timeout = ?`,
-  [guildId, status, count, windowMs, timeoutParsed.ms, status, count, windowMs, timeoutParsed.ms], (err) => {
+  [guildId, status, count, sous, timeoutParsed.ms, status, count, sous, timeoutParsed.ms], (err) => {
     if (err) return message.reply('Erreur lors de la mise à jour des paramètres.');
 
     const response = status ?
