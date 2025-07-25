@@ -2,8 +2,6 @@ const Discord = require('discord.js');
 const db = require('../../Events/loadDatabase');
 const config = require('../../config.json');
 
-const ITEMS_PER_PAGE = 10;
-
 exports.help = {
   name: 'owner',
   sname: 'owner',
@@ -99,7 +97,7 @@ if (public) {
   if (args.length === 0) {
     db.all('SELECT id FROM owner', [], async (err, rows) => {
       if (err) {
-        console.error('Erreur lors de la récupération de la owner:', err);
+        console.error('Erreur lors de la récupération de la liste owner:', err);
         return 
       }
 
@@ -107,7 +105,7 @@ if (public) {
         return message.reply("La liste des owners est vide.");
       }
 
-      const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(rows.length / 10);
       let currentPage = 1;
 
       const generateEmbed = async (page) => {
@@ -116,8 +114,8 @@ if (public) {
           .setColor(config.color)
           .setFooter({ text: `${rows.length} personnes - ${page}/${totalPages}` });
 
-        const start = (page - 1) * ITEMS_PER_PAGE;
-        const end = Math.min(start + ITEMS_PER_PAGE, rows.length);
+        const start = (page - 1) * 10;
+        const end = Math.min(start + 10, rows.length);
 
         for (let i = start; i < end; i++) {
           const user = await bot.users.fetch(rows[i].id).catch(() => null);
