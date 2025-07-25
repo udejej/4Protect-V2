@@ -4,10 +4,10 @@ const config = require('../../config.json');
 
 exports.help = {
   name: 'nom',
-  sname: 'nom',
-  aliases: ['nom alternative', '2ième alias'],
-  description: 'Description',
-  use: 'nom <a/a/a> [a/a/a]'
+  sname: 'nom <x/x> [x/x]',
+  aliases: ['nom alternatif', 'nom alternatif 2'],
+  description: 'description',
+  use: 'nom <x/x> [x/x]'
 };
 
 exports.run = async (bot, message, args, config) => {
