@@ -1,8 +1,6 @@
 const Discord = require('discord.js');
 const db = require('../Events/loadDatabase');
 
-const ITEMS_PER_PAGE = 10;
-
 module.exports = {
   name: 'whitelist',
   description: 'Permet de gérer la whitelist',
@@ -108,12 +106,12 @@ if (public) {
           return;
         }
 
-        const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
+        const totalPages = Math.ceil(rows.length / 10);
         let currentPage = 1;
 
         const generateEmbed = async (page) => {
           const embed = new Discord.EmbedBuilder()
-            .setTitle('La whitelist')
+            .setTitle('Whitelist')
             .setColor(config.color)
             .setFooter({ text: `${rows.length} personnes - ${page}/${totalPages}` });
 
