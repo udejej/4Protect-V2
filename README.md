@@ -1,4 +1,7 @@
-# 4Protect-V2
+# 4Protect V2
+On a pas d'argent pour acheter un bot mais on veut avoir quelques choses de qualité, j'étais dans la même situation malheureusement.
+
+Voici 4Protect est un bot Discord polyvalent pour la gestion de serveurs. Gratuit, puissant et entièrement personnalisable, il vous aide à sécuriser, modérer et automatiser votre communauté en toute simplicité.
 
 ## Fonctionnalités
 - Discord.js en V14
