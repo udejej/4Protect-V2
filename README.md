@@ -5,7 +5,8 @@ J'ai songé à vendre le bot à quelques euros mais pensé à ceux qui ne peuven
 Merci au don de Topher qui m'a fait reprendre le développement...
 
 ## Fonctionnalités
-- Discord.js en V14
+- Discord.js V14 
+- Database
 - Antiraid
 - Contact
 - Gestion
