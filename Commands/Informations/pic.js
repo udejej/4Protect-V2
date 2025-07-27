@@ -91,7 +91,10 @@ if (public) {
   };
 
   if (!(await checkperm(message, exports.help.name))) {
-    return message.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande.", allowedMentions: { repliedUser: false } });
+    const noacces = new EmbedBuilder()
+    .setDescription("Vous n'avez pas la permission d'utiliser cette commande.")
+    .setColor(config.color);
+  return message.reply({embeds: [noacces], allowedMentions: { repliedUser: true }});
   }
     let user = message.mentions.users.first() || (args[0] ? await bot.users.fetch(args[0]).catch(() => null) : message.author);
 

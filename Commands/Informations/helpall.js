@@ -21,11 +21,25 @@ const public = await new Promise((resolve, reject) => {
     resolve(!!row);
   });
 });
+
 if (public) {
-  return true;
+
+  const publiccheck = await new Promise((resolve, reject) => {
+    db.get(
+      'SELECT command FROM cmdperm WHERE perm = ? AND command = ? AND guild = ?',
+      ['public', commandName, message.guild.id],
+      (err, row) => {
+        if (err) reject(err);
+        resolve(!!row);
+      }
+    );
+  });
+
+  if (publiccheck) {
+    return true;
+  }
 }
     
-
     try {
       const userwl = await new Promise((resolve, reject) => {
         db.get('SELECT id FROM whitelist WHERE id = ?', [message.author.id], (err, row) => {
@@ -75,6 +89,13 @@ if (public) {
       return false;
     }
   };
+
+  if (!(await checkperm(message, exports.help.name))) {
+    const noacces = new EmbedBuilder()
+    .setDescription("Vous n'avez pas la permission d'utiliser cette commande.")
+    .setColor(config.color);
+  return message.reply({embeds: [noacces], allowedMentions: { repliedUser: true }});
+  }
 
 db.all(`SELECT * FROM cmdperm WHERE guild = ?`, [message.guild.id], (err, rows) => {
   if (err) {

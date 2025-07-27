@@ -86,7 +86,10 @@ if (public) {
   };
 
   if (!(await checkperm(message, exports.help.name))) {
-    return message.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande.", allowedMentions: { repliedUser: false } });
+    const noacces = new EmbedBuilder()
+    .setDescription("Vous n'avez pas la permission d'utiliser cette commande.")
+    .setColor(config.color);
+  return message.reply({embeds: [noacces], allowedMentions: { repliedUser: true }});
   }
     return message.reply({ content: "V2", allowedMentions: { repliedUser: false } });
   };

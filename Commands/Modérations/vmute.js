@@ -16,6 +16,31 @@ exports.run = async (bot, message, args, config) => {
       return true;
     }
 
+const public = await new Promise((resolve, reject) => {
+  db.get('SELECT statut FROM public WHERE guild = ? AND statut = ?', [message.guild.id, 'on'], (err, row) => {
+    if (err) reject(err);
+    resolve(!!row);
+  });
+});
+
+if (public) {
+
+  const publiccheck = await new Promise((resolve, reject) => {
+    db.get(
+      'SELECT command FROM cmdperm WHERE perm = ? AND command = ? AND guild = ?',
+      ['public', commandName, message.guild.id],
+      (err, row) => {
+        if (err) reject(err);
+        resolve(!!row);
+      }
+    );
+  });
+
+  if (publiccheck) {
+    return true;
+  }
+}
+    
     try {
       const userwl = await new Promise((resolve, reject) => {
         db.get('SELECT id FROM whitelist WHERE id = ?', [message.author.id], (err, row) => {
@@ -25,6 +50,17 @@ exports.run = async (bot, message, args, config) => {
       });
 
       if (userwl) {
+        return true;
+      }
+
+            const userowner = await new Promise((resolve, reject) => {
+        db.get('SELECT id FROM owner WHERE id = ?', [message.author.id], (err, row) => {
+          if (err) reject(err);
+          resolve(!!row);
+        });
+      });
+
+      if (userowner) {
         return true;
       }
 
@@ -56,7 +92,10 @@ exports.run = async (bot, message, args, config) => {
   };
 
   if (!(await checkperm(message, exports.help.name))) {
-    return message.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande.", allowedMentions: { repliedUser: false } });
+    const noacces = new EmbedBuilder()
+    .setDescription("Vous n'avez pas la permission d'utiliser cette commande.")
+    .setColor(config.color);
+  return message.reply({embeds: [noacces], allowedMentions: { repliedUser: true }});
   }
 
   const user = message.mentions.members.first() || await message.guild.members.fetch(args[0]).catch(() => null);
