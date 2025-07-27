@@ -29,6 +29,7 @@ const dbcreate = () => {
       `CREATE TABLE IF NOT EXISTS confesslogs (guildId TEXT, userId TEXT, message TEXT)`,
       `CREATE TABLE IF NOT EXISTS Suggest (guildId TEXT PRIMARY KEY, channel TEXT)`,
       `CREATE TABLE IF NOT EXISTS joinsettings (guildId TEXT PRIMARY KEY, channel TEXT, message TEXT)`,
+      `CREATE TABLE IF NOT EXISTS captcha (guild TEXT PRIMARY KEY, id TEXT)`,
       `CREATE TABLE IF NOT EXISTS antiraid (
   guild TEXT PRIMARY KEY, 
   antilink INTEGER DEFAULT 0, 

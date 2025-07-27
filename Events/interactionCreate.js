@@ -95,6 +95,22 @@ if (interaction.isButton() && interaction.customId.startsWith('giveaway_')) {
   }
 }
 
+    if (interaction.isButton() && interaction.customId === 'cbutton') {
+  db.get('SELECT id FROM captcha WHERE guild = ?', [interaction.guild.id], async (err, row) => {
+    if (err) {
+      console.error(err);
+    }
+    const role = interaction.guild.roles.cache.get(row.id);
+      try {
+      await interaction.member.roles.add(role);
+    } catch (e) {
+      console.error(e);
+    }
+
+  });
+}
+
+
     if (interaction.isButton() && interaction.customId === 'suggest_open') {
       const modal = new ModalBuilder()
         .setCustomId('suggest_modal')
