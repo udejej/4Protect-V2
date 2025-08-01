@@ -31,7 +31,7 @@ node index.js
 ```
 
 ## Installation Vidéo
-https://streamtape.com/e/x2aD2jpPydFkW2b/
+http://vidmoly.me/w/1dojt45ftg4o 
 
 ## Contribution
 Les contributions sont acceptées avec plaisir suffit de faire un pull requests / issues 
