@@ -12,21 +12,21 @@ exports.help = {
 
 exports.run = async (bot, message, args, config) => {
 
-  const configcheck = async (message, commandName) => {
+  const checkperm = async (message, commandName) => {
     if (config.owners.includes(message.author.id)) {
       return true;
     }
 
-const publicOn = await new Promise((resolve, reject) => {
+const public = await new Promise((resolve, reject) => {
   db.get('SELECT statut FROM public WHERE guild = ? AND statut = ?', [message.guild.id, 'on'], (err, row) => {
     if (err) reject(err);
     resolve(!!row);
   });
 });
 
-if (publicOn) {
+if (public) {
 
-  const publicCheck = await new Promise((resolve, reject) => {
+  const publiccheck = await new Promise((resolve, reject) => {
     db.get(
       'SELECT command FROM cmdperm WHERE perm = ? AND command = ? AND guild = ?',
       ['public', commandName, message.guild.id],
@@ -37,37 +37,38 @@ if (publicOn) {
     );
   });
 
-  if (publicCheck) {
+  if (publiccheck) {
     return true;
   }
 }
     
     try {
-      const wldb = await new Promise((resolve, reject) => {
+      const userwl = await new Promise((resolve, reject) => {
         db.get('SELECT id FROM whitelist WHERE id = ?', [message.author.id], (err, row) => {
           if (err) reject(err);
           resolve(!!row);
         });
       });
 
-      if (wldb) {
+      if (userwl) {
         return true;
       }
 
-            const ownerdb = await new Promise((resolve, reject) => {
+            const userowner = await new Promise((resolve, reject) => {
         db.get('SELECT id FROM owner WHERE id = ?', [message.author.id], (err, row) => {
           if (err) reject(err);
           resolve(!!row);
         });
       });
 
-      if (ownerdb) {
+      if (userowner) {
         return true;
       }
 
-      const roles = message.member.roles.cache.map(role => role.id);
+      const userRoles = message.member.roles.cache.map(role => role.id);
+
       const permissions = await new Promise((resolve, reject) => {
-        db.all('SELECT perm FROM permissions WHERE id IN (' + roles.map(() => '?').join(',') + ') AND guild = ?', [...roles, message.guild.id], (err, rows) => {
+        db.all('SELECT perm FROM permissions WHERE id IN (' + userRoles.map(() => '?').join(',') + ') AND guild = ?', [...userRoles, message.guild.id], (err, rows) => {
           if (err) reject(err);
           resolve(rows.map(row => row.perm));
         });
@@ -91,7 +92,7 @@ if (publicOn) {
     }
   };
 
-  if (!(await configcheck(message, exports.help.name))) {
+  if (!(await checkperm(message, exports.help.name))) {
     const noacces = new EmbedBuilder()
     .setDescription("Vous n'avez pas la permission d'utiliser cette commande.")
     .setColor(config.color);
