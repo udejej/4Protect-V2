@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const db = require('../../Events/loadDatabase');
 const config = require('../../config.json');
+const sendLog = require('../../Events/sendlog');
 
 exports.help = {
   name: 'mute',
