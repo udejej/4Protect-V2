@@ -29,7 +29,7 @@ npm install
 ```bash
 node index.js
 ```
-
+Pour mettre à jour il suffit de conserver la database et la config puis de les glisser dans le dossier du bot à jour
 ## Installation Vidéo
 https://vidmoly.net/embed-1dojt45ftg4o.html
 
