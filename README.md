@@ -30,6 +30,9 @@ npm install
 node index.js
 ```
 Pour mettre à jour il suffit de conserver la database et la config puis de les glisser dans le dossier du bot à jour
+https://github.com/user-attachments/assets/84079110-9257-45f9-9b3e-434cabf515c6
+
+
 ## Installation Vidéo
 https://vidmoly.net/embed-1dojt45ftg4o.html
 
