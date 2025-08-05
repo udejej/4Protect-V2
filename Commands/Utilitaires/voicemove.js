@@ -1,4 +1,6 @@
 const config = require('../../config.json');
+const { EmbedBuilder } = require('discord.js');
+const db = require('../../Events/loadDatabase');
 
 exports.help = {
   name: 'voicemove',
@@ -98,14 +100,12 @@ if (public) {
   const member = message.mentions.members.first() || await message.guild.members.fetch(args[0]).catch(() => null);
   if (!member) return message.reply("Utilisateur introuvable.");
   if (!member.voice.channel) return message.reply("Ce membre n'est pas en vocal.");
-
-  const authorVoice = message.member.voice.channel;
-  if (!authorVoice) return message.reply("Vous devez être en vocal pour utiliser cette commande.");
+  if (!message.member.voice.channel) return message.reply("Vous devez être en vocal pour utiliser cette commande.");
 
   try {
-    await member.voice.setChannel(authorVoice);
+    await member.voice.setChannel(message.member.voice.channel);
     message.reply(`<@${member.id}> a été move.`);
   } catch (e) {
-    message.reply("Impossible de déplacer ce membre.");
+    message.reply("Je n'ai pas la permission de le move.");
   }
 };
