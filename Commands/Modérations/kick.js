@@ -64,10 +64,10 @@ if (public) {
         return true;
       }
 
-      const userRoles = message.member.roles.cache.map(role => role.id);
+      const userrole = message.member.roles.cache.map(role => role.id);
 
       const permissions = await new Promise((resolve, reject) => {
-        db.all('SELECT perm FROM permissions WHERE id IN (' + userRoles.map(() => '?').join(',') + ') AND guild = ?', [...userRoles, message.guild.id], (err, rows) => {
+        db.all('SELECT perm FROM permissions WHERE id IN (' + userrole.map(() => '?').join(',') + ') AND guild = ?', [...userrole, message.guild.id], (err, rows) => {
           if (err) reject(err);
           resolve(rows.map(row => row.perm));
         });
@@ -99,8 +99,12 @@ if (public) {
   }
 
   const user = message.mentions.members.first() || await message.guild.members.fetch(args[0]).catch(() => null);
-  if (!user) {
+    if (!user) {
     return message.reply("L'utilisateur n'existe pas.");
+  }
+
+  if (message.member.roles.highest.position <= user.roles.highest.position) {
+    return message.reply("Vous ne pouvez pas kick un membre supérieur à vous.");
   }
 
   const reason = args.slice(1).join(' ');

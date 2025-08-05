@@ -99,8 +99,12 @@ if (public) {
   }
 
   const user = message.mentions.members.first() || await message.guild.members.fetch(args[0]).catch(() => null);
-  if (!user) {
+    if (!user) {
     return message.reply("L'utilisateur n'existe pas.");
+  }
+
+  if (message.member.roles.highest.position <= user.roles.highest.position) {
+    return message.reply("Vous ne pouvez pas bannir un membre supérieur à vous.");
   }
 
   const reason = args.slice(1).join(' ');

@@ -99,8 +99,12 @@ if (public) {
   }
 
   const member = message.mentions.members.first() || await message.guild.members.fetch(args[0]).catch(() => null);
-  if (!member) {
+    if (!member) {
     return message.reply("Utilisateur introuvable.");
+  }
+
+  if (message.member.roles.highest.position <= member.roles.highest.position) {
+    return message.reply("Vous ne pouvez pas mute un membre supérieur à vous.");
   }
 
   let duration = args[1];

@@ -100,8 +100,13 @@ if (public) {
 
 
   const user = message.mentions.users.first() || await bot.users.fetch(args[0]).catch(() => null);
-  if (!user) {
+    if (!user) {
     return message.reply("L'utilisateur n'existe pas.");
+  }
+
+  const member = message.guild.members.cache.get(user.id);
+  if (member && message.member.roles.highest.position <= member.roles.highest.position) {
+    return message.reply("Vous ne pouvez pas warn un membre supérieur à vous.");
   }
 
   const reason = args.slice(1).join(' ');

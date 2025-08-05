@@ -97,15 +97,13 @@ if (public) {
     .setColor(config.color);
   return message.reply({embeds: [noacces], allowedMentions: { repliedUser: true }});
   }
-
-  const member = message.mentions.members.first() || await message.guild.members.fetch(args[0]).catch(() => null);
-  if (!member) {
-    return message.reply("Utilisateur introuvable.");
+    const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[1]);
+  if (!role) {
+    return message.reply("Le rôle n'existe pas.");
   }
 
-  const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[1]);
-  if (!role) {
-    return message.reply("Rôle introuvable.");
+  if (message.member.roles.highest.position <= role.position) {
+    return message.reply("Vous ne pouvez pas ajouter un rôle supérieur au votre.");
   }
 
   try {

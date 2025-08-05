@@ -104,8 +104,12 @@ if (public) {
   }
 
   const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[1]);
-  if (!role) {
+    if (!role) {
     return message.reply("Rôle introuvable.");
+  }
+
+  if (message.member.roles.highest.position <= role.position) {
+    return message.reply("Vous ne pouvez pas retirer un rôle à un membre supérieur à vous.");
   }
 
   try {
